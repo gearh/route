@@ -1,0 +1,15 @@
+{
+    "name": "gearh/route",
+    "authors": [
+        {
+            "name": "gearh",
+            "email": "gearh@qq.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Gearh\\Route\\": "src/"
+        }
+    }
+}
