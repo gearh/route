@@ -6,6 +6,14 @@ require '../vendor/autoload.php';
 
 $router = new Router;
 
+$router->handleClosure(function ($string){
+
+    return ;
+});
+
+
+
+
 $router->group(function($router){
 
     $router->add((new Rule)
@@ -18,7 +26,6 @@ $router->group(function($router){
 }, function ($next, $param){
     return $next($param);
 });
-
 
 
 $router->run('/post-12', 'POST', function ($handle, $param){

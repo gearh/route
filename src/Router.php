@@ -7,6 +7,8 @@ Class Router
 {
     public $rules;
 
+    protected $_handleClosure;
+
     public function add(Rule $rule)
     {
         if (isset($rule->name)) {
@@ -25,8 +27,13 @@ Class Router
         return call_user_func_array($rule->restore, [$param]);
     }
 
-    public function middleware(Closure $middleware)
+    public function middleware($middleware)
     {
+        if (!($middleware instanceof Closure)) {
+            $handleClosure = $this->_handleClosure;
+            $middleware = $handleClosure($middleware, 'middleware');
+        }
+
         foreach ($this->rules as $rule) {
             $next = $rule->to;
             $rule->to(function () use ($next, $middleware){
@@ -39,9 +46,10 @@ Class Router
         return true;
     }
 
-    public function group(Closure $group, Closure $middleware)
+    public function group(Closure $group, $middleware)
     {
         $router = new Router;
+        $router->handleClosure($this->_handleClosure);
         $group($router);
         $router->middleware($middleware);
         foreach ($router->rules as $rule) {
@@ -60,12 +68,44 @@ Class Router
         $match = null;
         foreach ($this->rules as $rule) {
             $match = $rule->match($uri, $method);
-            if ($match == null) continue;
+            if ($match !== null) {
+                $to = $rule->to;
+                break;
+            }
 
-            $to = $rule->to;
         }
 
         return $closure($to, $match);
+    }
+
+    public function handleClosure(Closure $closure)
+    {
+        $this->_handleClosure = $closure;
+
+        return $this;
+    }
+
+    public function addRoute($method, $from, $to, $name = null)
+    {
+        if (!($to instanceof Closure)) {
+            $handleClosure = $this->_handleClosure;
+            $to = $handleClosure($to, 'controller');
+        }
+
+        $rule = (new Rule)
+            ->name($name)
+            ->from($from)
+            ->to($to);
+
+        if (in_array(strtolower($method), ['post', 'get'])) {
+            $rule->method($method);
+        }
+
+        if ($name){
+            $rule->name($name);
+        }
+
+        return $this->add($rule);
     }
 
 }

@@ -7,7 +7,9 @@
         }
     ],
     "license": "MIT",
-    "require": {},
+    "require": {
+        "gearh/route": "dev-master"
+    },
     "autoload": {
         "psr-4": {
             "Gearh\\Route\\": "src/"
