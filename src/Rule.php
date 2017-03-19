@@ -70,7 +70,6 @@ Class Rule
     {
         $matches = [];
         preg_match_all('/:(?<name>\w+)/', $pattern, $matches);
-        
         $newParamForm = [];
         foreach ($matches['name'] as $key) {
 
@@ -80,7 +79,7 @@ Class Rule
             }else{
                 $newParamForm[':' . $key] = "(?<{$key}>\w+)";
             }
-            
+
         }
 
         $paramForm = $newParamForm;

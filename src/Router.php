@@ -31,7 +31,7 @@ Class Router
     {
         if (!($middleware instanceof Closure)) {
             $handleClosure = $this->_handleClosure;
-            $middleware = $handleClosure($middleware, 'middleware');
+            $middleware = $handleClosure($middleware);
         }
 
         foreach ($this->rules as $rule) {
@@ -61,7 +61,6 @@ Class Router
         return true;
     }
 
-
     public function run($uri, $method, Closure $closure)
     {
         $to = null;
@@ -89,7 +88,7 @@ Class Router
     {
         if (!($to instanceof Closure)) {
             $handleClosure = $this->_handleClosure;
-            $to = $handleClosure($to, 'controller');
+            $to = $handleClosure($to);
         }
 
         $rule = (new Rule)
