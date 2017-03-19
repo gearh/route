@@ -52,7 +52,7 @@ Class Rule
 
     public function match($path, $method)
     {
-        if ($this->method AND $this->method !== $method) {
+        if ($this->method AND strtolower($this->method) !== strtolower($method)) {
             return null;
         }
 
