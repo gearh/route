@@ -6,25 +6,28 @@ require '../vendor/autoload.php';
 
 $router = new Router;
 
-$router->handleClosure(function ($string){
-    return ;
-});
+# full param
+$rule = (new rule)
+    ->method()
+    ->regular()
+    ->to();
+
+$router->add($rule);
+
+# get url
 
 
-$router->group(function($router){
 
-    $router->add((new Rule)
-        ->name('post_detail')
-        ->from('post-:id(/page-:page)')
-        ->to(function ($param){
-            var_dump($param);
-        }));
+# from
+# 
+# porce
+# 
+# add route
 
-}, function ($next, $param){
-    return $next($param);
-});
+# mind 
+# 
+# group
+
+# run 
 
 
-$router->run('/post-12', 'POST', function ($handle, $param){
-    $handle($param);
-});
