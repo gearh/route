@@ -10,18 +10,21 @@ Class Rule
 {
     /**
      * match regular
+     * 
      * @var string
      */
     public $regular;
 
     /**
      * after a successful match the target
+     * 
      * @var String|Closure
      */
     public $to;
 
     /**
      * the name needed to restore the url
+     * 
      * @var string
      */
     public $name;
@@ -35,6 +38,7 @@ Class Rule
 
     /**
      * the Closure to restore the url
+     * 
      * @var Closure
      */
     public $restore;
@@ -54,6 +58,7 @@ Class Rule
 
     /**
      * set to
+     * 
      * @param  miexd $to
      * @return Rule
      */
@@ -66,6 +71,7 @@ Class Rule
 
     /**
      * set method
+     * 
      * @param  stirng $method
      * @return Rule
      */
@@ -78,6 +84,7 @@ Class Rule
 
     /**
      * set restore
+     * 
      * @param  Closure $restore
      * @return Rule
      */
@@ -90,6 +97,7 @@ Class Rule
 
     /**
      * set name
+     * 
      * @param  stirng $name
      * @return Rule
      */
@@ -102,6 +110,7 @@ Class Rule
 
     /**
      * match a url & method
+     * 
      * @param  stirng $path
      * @param  stirng $method
      * @return bool
@@ -177,6 +186,7 @@ Class Rule
 
     /**
      * get all item in array key is string
+     * 
      * @param  array $array
      * @return array
      */

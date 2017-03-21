@@ -10,12 +10,14 @@ Class Router
 {
     /**
      * all rule
+     * 
      * @var array
      */
     public $rules;
 
     /**
      * Closure to proc rule::to
+     * 
      * @var Closure
      */
     protected $_procClosure;
@@ -74,6 +76,7 @@ Class Router
 
     /**
      * add a group
+     * 
      * @param  Closure $group
      * @param  string|Closure  $middleware add middleware for the rule registered in $group
      * @return bool
@@ -81,7 +84,7 @@ Class Router
     public function group(Closure $group, $middleware)
     {
         $router = new Router;
-        $router->handleClosure($this->_procClosure);
+        $router->setProcClosure($this->_procClosure);
         $group($router);
         $router->middleware($middleware);
         foreach ($router->rules as $rule) {
@@ -119,6 +122,7 @@ Class Router
 
     /**
      * set a Closure to proc rule::to when rule::to is not Closure。
+     * 
      * @param Closure $closure
      * @return  bool
      */
@@ -147,6 +151,7 @@ Class Router
 
     /**
      * fast way to new rule
+     * 
      * @param string $method
      * @param string $from
      * @param miexd $to
