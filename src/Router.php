@@ -3,12 +3,28 @@ namespace Gearh\Route;
 
 use Closure;
 
+/**
+ * Router
+ */
 Class Router
 {
+    /**
+     * all rule
+     * @var array
+     */
     public $rules;
 
-    protected $_handleClosure;
+    /**
+     * Closure to proc rule::to
+     * @var Closure
+     */
+    protected $_procClosure;
 
+    /**
+     * add a rule
+     * 
+     * @param Rule $rule
+     */
     public function add(Rule $rule)
     {
         if (isset($rule->name)) {
@@ -20,6 +36,13 @@ Class Router
         return true;
     }
 
+    /**
+     * restore a url by route name and param
+     * 
+     * @param  string $name
+     * @param  array  $param
+     * @return string
+     */
     public function url($name, array $param = [])
     {
         $rule = $this->rules[$name];
@@ -27,15 +50,18 @@ Class Router
         return call_user_func_array($rule->restore, [$param]);
     }
 
+    /**
+     * add middleware for all rule
+     * 
+     * @param  string|Closure $middleware [description]
+     * @return bool
+     */
     public function middleware($middleware)
     {
-        if (!($middleware instanceof Closure)) {
-            $handleClosure = $this->_handleClosure;
-            $middleware = $handleClosure($middleware);
-        }
+        $middleware = $this->_procTo($middleware);
 
         foreach ($this->rules as $rule) {
-            $next = $rule->to;
+            $next = $this->_procTo($rule->to);
             $rule->to(function () use ($next, $middleware){
                 $param = func_get_args();
                 array_unshift($param, $next); 
@@ -46,10 +72,16 @@ Class Router
         return true;
     }
 
+    /**
+     * add a group
+     * @param  Closure $group
+     * @param  string|Closure  $middleware add middleware for the rule registered in $group
+     * @return bool
+     */
     public function group(Closure $group, $middleware)
     {
         $router = new Router;
-        $router->handleClosure($this->_handleClosure);
+        $router->handleClosure($this->_procClosure);
         $group($router);
         $router->middleware($middleware);
         foreach ($router->rules as $rule) {
@@ -61,6 +93,14 @@ Class Router
         return true;
     }
 
+    /**
+     * math a rule and proc
+     * 
+     * @param  string  $uri
+     * @param  string  $method
+     * @param  Closure $closure proc math result
+     * @return miexd
+     */
     public function run($uri, $method, Closure $closure)
     {
         $to = null;
@@ -68,7 +108,7 @@ Class Router
         foreach ($this->rules as $rule) {
             $match = $rule->match($uri, $method);
             if ($match !== null) {
-                $to = $rule->to;
+                $to = $to = $this->_procTo($rule->to);
                 break;
             }
 
@@ -77,20 +117,44 @@ Class Router
         return $closure($to, $match);
     }
 
-    public function handleClosure(Closure $closure)
+    /**
+     * set a Closure to proc rule::to when rule::to is not Closure。
+     * @param Closure $closure
+     * @return  bool
+     */
+    public function setProcClosure(Closure $closure)
     {
-        $this->_handleClosure = $closure;
+        $this->_procClosure = $closure;
 
         return $this;
     }
 
-    public function addRoute($method, $from, $to, $name = null)
+    /**
+     * proc rule::to
+     * 
+     * @param  miexd $to
+     * @return Closure
+     */
+    protected function _procTo($to)
     {
         if (!($to instanceof Closure)) {
-            $handleClosure = $this->_handleClosure;
-            $to = $handleClosure($to);
+            $procClosure = $this->_procClosure;
+            $to = $procClosure($to);
         }
 
+        return $to;
+    }
+
+    /**
+     * fast way to new rule
+     * @param string $method
+     * @param string $from
+     * @param miexd $to
+     * @param string $name
+     * @return  bool
+     */
+    public function addRoute($method, $from, $to, $name = null)
+    {
         $rule = (new Rule)
             ->name($name)
             ->from($from)

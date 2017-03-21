@@ -7,11 +7,8 @@ require '../vendor/autoload.php';
 $router = new Router;
 
 $router->handleClosure(function ($string){
-
     return ;
 });
-
-
 
 
 $router->group(function($router){
