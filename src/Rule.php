@@ -177,7 +177,7 @@ Class Rule
         $paramForm = $newParamForm;
         
         # Replace '/' with '\/', and add head,tail
-        $pattern = '/\/' . str_replace('/', '\/', $pattern) . '$/';
+        $pattern = '/^\/' . str_replace('/', '\/', $pattern) . '$/';
         $pattern = str_replace('(', '(|', $pattern); # Replace "( )" with choose grammar
         $this->regular = str_replace(array_keys($paramForm), $paramForm, $pattern);
 
