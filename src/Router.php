@@ -112,12 +112,13 @@ Class Router
             $match = $rule->match($uri, $method);
             if ($match !== null) {
                 $to = $to = $this->_procTo($rule->to);
+                $name = $rule->name;
                 break;
             }
 
         }
 
-        return $closure($to, $match);
+        return $closure($to, $match, $name);
     }
 
     /**
@@ -161,7 +162,6 @@ Class Router
     public function addRoute($method, $from, $to, $name = null)
     {
         $rule = (new Rule)
-            ->name($name)
             ->from($from)
             ->to($to);
 
