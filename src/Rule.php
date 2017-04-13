@@ -151,7 +151,7 @@ Class Rule
 
             # Replace placeholders with parameters
             $url = str_replace(array_keys($newParam), $newParam, $pattern);
-            $url = preg_replace('/\(.*:.*\)/', '', $url); # remove empty placeholders in url
+            $url = preg_replace('/\([^()]+:[^()]+\)/', '', $url); # remove empty placeholders in url
             $url = str_replace('(', '', $url); # remove (
             $url = str_replace(')', '', $url); # remove )
             $url = "/" . $url;
