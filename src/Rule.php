@@ -151,7 +151,7 @@ Class Rule
 
             # Replace placeholders with parameters
             $url = str_replace(array_keys($newParam), $newParam, $pattern);
-            $url = preg_replace('/\(.*:.*\)/', '', $url); # remove empty placeholders in url
+            $url = preg_replace('/\([^()]*:[^()]*\)/', '', $url); # remove empty placeholders in url
             $url = str_replace('(', '', $url); # remove (
             $url = str_replace(')', '', $url); # remove )
             $url = "/" . $url;
@@ -177,7 +177,7 @@ Class Rule
         $paramForm = $newParamForm;
         
         # Replace '/' with '\/', and add head,tail
-        $pattern = '/\/' . str_replace('/', '\/', $pattern) . '$/';
+        $pattern = '/^\/' . str_replace('/', '\/', $pattern) . '$/';
         $pattern = str_replace('(', '(|', $pattern); # Replace "( )" with choose grammar
         $this->regular = str_replace(array_keys($paramForm), $paramForm, $pattern);
 
