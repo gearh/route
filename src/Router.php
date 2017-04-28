@@ -2,6 +2,7 @@
 namespace Gearh\Route;
 
 use Closure;
+use Exception;
 
 /**
  * Router
@@ -47,6 +48,10 @@ Class Router
      */
     public function url($name, array $param = [])
     {
+        if (!isset($this->rules[$name])) {
+            throw new Exception("命名路由[{$name}]不存在");
+        }
+
         $rule = $this->rules[$name];
 
         return call_user_func_array($rule->restore, [$param]);
@@ -112,13 +117,12 @@ Class Router
             $match = $rule->match($uri, $method);
             if ($match !== null) {
                 $to = $to = $this->_procTo($rule->to);
-                $name = $rule->name;
                 break;
             }
 
         }
 
-        return $closure($to, $match, $name);
+        return $closure($to, $match, $rule);
     }
 
     /**
@@ -162,6 +166,7 @@ Class Router
     public function addRoute($method, $from, $to, $name = null)
     {
         $rule = (new Rule)
+            ->name($name)
             ->from($from)
             ->to($to);
 
