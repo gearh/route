@@ -108,27 +108,34 @@ Class Rule
         return $this;
     }
 
-    /**
-     * match a url & method
-     * 
-     * @param  stirng $path
-     * @param  stirng $method
-     * @return bool
-     */
-    public function match($path, $method)
+    public function isMatch($url, $method)
     {
         if ($this->method AND strtolower($this->method) !== strtolower($method)) {
-            return null;
+            return false;
         }
 
+
+        $isMatch = preg_match_all($this->regular, $url);
+        if ($isMatch) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getParam($url)
+    {
         $matches = [];
-        $return = preg_match_all($this->regular, $path, $matches);
+        $return = preg_match_all($this->regular, $url, $matches);
         if ($return) {
             return $this->_getStrKeyItem($matches);
         }
 
         return null;
     }
+
+
+    
 
     /**
      * easy way set regular & regular

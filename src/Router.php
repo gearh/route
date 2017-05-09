@@ -106,19 +106,23 @@ Class Router
      */
     public function run($uri, $method, Closure $closure)
     {
-        $to = null;
-        $match = null;
-        foreach ($this->rules as $rule) {
-            $match = $rule->match($uri, $method);
-            if ($match !== null) {
-                $to = $to = $this->_procTo($rule->to);
-                $name = $rule->name;
-                break;
-            }
+        $rule = $this->match($uri, $method);
+        $param = $rule->getParam($uri);
+        $to = $to = $this->_procTo($rule->to);
 
+        return $closure($to, $param);
+    }
+
+
+    public function match($url, $method = 'get')
+    {
+        foreach ($this->rules as $rule) {
+            if ($rule->isMatch($url, $method)) {
+                return $rule;
+            }
         }
 
-        return $closure($to, $match, $name);
+        return null;
     }
 
     /**
@@ -162,6 +166,7 @@ Class Router
     public function addRoute($method, $from, $to, $name = null)
     {
         $rule = (new Rule)
+            ->name($name)
             ->from($from)
             ->to($to);
 
